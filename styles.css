@@ -110,13 +110,14 @@
 
 /* ---------------------------------------------------------------------------
    4. Scroll Reveal
-   Elements with [data-reveal] or children of [data-stagger] start invisible
-   and slide up. The JS observer adds .in-view to trigger the transition.
+   .js-reveal is added to <body> by scroll-reveal JS before the observer
+   runs. Without that class (JS failed / not yet run), all content is
+   visible — this is the no-JS fallback.
    Service cards also need opacity + transform here so the .service-card rule
    below (same specificity) doesn't override the reveal transition.
    --------------------------------------------------------------------------- */
-[data-reveal],
-[data-stagger] > * {
+.js-reveal [data-reveal],
+.js-reveal [data-stagger] > * {
   opacity: 0;
   transform: translateY(24px);
   transition:
@@ -124,15 +125,15 @@
     transform 560ms var(--ease);
 }
 
-[data-reveal].in-view,
-[data-stagger] > *.in-view {
+.js-reveal [data-reveal].in-view,
+.js-reveal [data-stagger] > *.in-view {
   opacity: 1;
   transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-reveal],
-  [data-stagger] > * {
+  .js-reveal [data-reveal],
+  .js-reveal [data-stagger] > * {
     opacity: 1;
     transform: none;
     transition: none;
@@ -143,7 +144,9 @@
 /* ---------------------------------------------------------------------------
    5. Service Cards
    Must list all 4 transition properties so it doesn't shadow the reveal
-   transitions (same specificity 0,1,0 as [data-stagger] > *).
+   transitions when .js-reveal is active (same specificity 0,1,0 as
+   .js-reveal [data-stagger] > * would be 0,2,0, so actually fine — but
+   keep all 4 to be safe when .js-reveal is present).
    --------------------------------------------------------------------------- */
 .service-card {
   transition:
