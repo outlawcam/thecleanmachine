@@ -1,7 +1,7 @@
 /* =============================================================================
    THE CLEAN MACHINE — styles.css
-   Interactive state styles: hover, focus, active
-   Organization: tokens → global reset → navigation → buttons → cards → links → accessibility → motion
+   Interactive states: hover, focus, active
+   Organization: tokens → navigation → buttons → cards → links → accessibility → motion
    ============================================================================= */
 
 
@@ -10,45 +10,41 @@
    --------------------------------------------------------------------------- */
 :root {
   --clr-teal:          #21C2B6;
-  --clr-teal-hover:    #1aada2;
-  --clr-teal-glow:     rgba(33, 194, 182, 0.38);
+  --clr-teal-deep:     #1aada2;
+  --clr-teal-glow:     rgba(33, 194, 182, 0.40);
   --clr-teal-light:    #7FE3D9;
   --clr-purple:        #8E7AD6;
   --clr-ink:           #2A1438;
 
-  --dur-fast:          160ms;
-  --dur-base:          220ms;
-  --ease:              cubic-bezier(0.16, 1, 0.3, 1);
+  /* Snap: color/opacity changes that should feel instant */
+  --dur-snap: 140ms;
+  /* Base: spatial movement — lifts, slides, scales */
+  --dur-move: 200ms;
+  --ease:     cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 
 /* ---------------------------------------------------------------------------
-   2. Global Interactive Reset
-   --------------------------------------------------------------------------- */
-a {
-  cursor: pointer;
-}
-
-
-/* ---------------------------------------------------------------------------
-   3. Navigation Links
+   2. Navigation Links
+   Shift from off-white to teal-light; a teal underline slides in from left.
    --------------------------------------------------------------------------- */
 .nav-link {
   position: relative;
-  transition: color var(--dur-fast) var(--ease);
+  transition: color var(--dur-snap) var(--ease);
 }
 
+/* Underline drawn with ::after so it doesn't disturb the layout */
 .nav-link::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: -3px;
   left: 0;
   width: 100%;
   height: 1.5px;
   background: var(--clr-teal-light);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform var(--dur-base) var(--ease);
+  transition: transform var(--dur-move) var(--ease);
 }
 
 .nav-link:hover,
@@ -63,94 +59,111 @@ a {
 
 
 /* ---------------------------------------------------------------------------
-   4. Buttons — Base
+   3. Buttons — shared transition base
    --------------------------------------------------------------------------- */
 .btn {
   transition:
-    background-color var(--dur-fast) var(--ease),
-    border-color     var(--dur-fast) var(--ease),
-    box-shadow       var(--dur-base) var(--ease),
-    transform        var(--dur-fast) var(--ease),
-    filter           var(--dur-fast) var(--ease);
+    background-color var(--dur-snap) var(--ease),
+    border-color     var(--dur-snap) var(--ease),
+    box-shadow       var(--dur-move) var(--ease),
+    transform        var(--dur-move) var(--ease),
+    filter           var(--dur-snap) var(--ease);
 }
 
+/* Press: snap back, no float */
 .btn:active {
-  transform: translateY(1px) !important;
+  transform: translateY(0) scale(1) !important;
   box-shadow: none !important;
   filter: none !important;
+  transition-duration: 60ms !important;
 }
 
 
-/* 4a. Primary — teal fill */
+/* Primary — solid teal
+   Deepens slightly, lifts 2 px, casts a teal glow below. */
 .btn-primary:hover,
 .btn-primary:focus-visible {
-  background-color: var(--clr-teal-hover) !important;
+  background-color: var(--clr-teal-deep) !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--clr-teal-glow);
+  box-shadow: 0 8px 28px var(--clr-teal-glow);
 }
 
 
-/* 4b. Ghost — transparent with white border */
+/* Ghost — transparent, white border
+   Fills with a pale teal wash; border brightens to signal the teal brand. */
 .btn-ghost:hover,
 .btn-ghost:focus-visible {
-  background-color: rgba(255, 255, 255, 0.09) !important;
-  border-color: rgba(255, 255, 255, 0.6) !important;
-  transform: translateY(-2px);
+  background-color: rgba(33, 194, 182, 0.08) !important;
+  border-color: rgba(127, 227, 217, 0.65) !important;
+  transform: translateY(-1px);
 }
 
 
-/* 4c. Gradient — large contact CTA */
+/* Gradient — large hero CTA
+   Scales up slightly instead of lifting — feels weightier and more deliberate. */
 .btn-gradient:hover,
 .btn-gradient:focus-visible {
-  filter: brightness(1.08);
-  transform: translateY(-3px);
-  box-shadow: 0 22px 52px rgba(33, 194, 182, 0.44) !important;
+  transform: scale(1.016);
+  box-shadow: 0 22px 60px rgba(33, 194, 182, 0.48) !important;
 }
 
 
 /* ---------------------------------------------------------------------------
-   5. Service Cards
+   4. Service Cards
+   A faint teal wash floods the card; a teal stripe appears at the top edge
+   using inset box-shadow so it never shifts layout.
    --------------------------------------------------------------------------- */
 .service-card {
   transition:
-    background-color var(--dur-base) var(--ease),
-    box-shadow       var(--dur-base) var(--ease);
+    background-color var(--dur-move) var(--ease),
+    box-shadow       var(--dur-move) var(--ease);
 }
 
 .service-card:hover {
-  background-color: #F4F2FA !important;
-  box-shadow: inset 0 0 0 1.5px rgba(142, 122, 214, 0.22);
+  background-color: rgba(33, 194, 182, 0.04) !important;
+  box-shadow: inset 0 3px 0 var(--clr-teal);
 }
 
 
 /* ---------------------------------------------------------------------------
-   6. Inline CTA Link
+   5. Inline CTA Link  (service-area "Not sure?" link)
+   Color deepens; underline slides in to confirm it's a link, not just text.
    --------------------------------------------------------------------------- */
 .link-cta {
-  transition: color var(--dur-fast) var(--ease);
+  transition:
+    color           var(--dur-snap) var(--ease),
+    text-decoration var(--dur-snap) var(--ease);
 }
 
 .link-cta:hover,
 .link-cta:focus-visible {
   color: var(--clr-teal) !important;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 
 /* ---------------------------------------------------------------------------
-   7. Footer Links
+   6. Footer Links
+   Teal-light colour shift paired with a small horizontal nudge — gives the
+   list a directional feel, like the links are leaning toward the cursor.
    --------------------------------------------------------------------------- */
 .footer-link {
-  transition: color var(--dur-fast) var(--ease);
+  transition:
+    color     var(--dur-snap) var(--ease),
+    transform var(--dur-move) var(--ease);
 }
 
 .footer-link:hover,
 .footer-link:focus-visible {
   color: var(--clr-teal-light) !important;
+  transform: translateX(4px);
 }
 
 
 /* ---------------------------------------------------------------------------
-   8. Focus Accessibility
+   7. Focus Accessibility
+   Teal-light outline works on both light and dark surfaces.
    --------------------------------------------------------------------------- */
 :focus-visible {
   outline: 2.5px solid var(--clr-teal-light);
@@ -163,12 +176,14 @@ a {
 }
 
 .nav-link:focus-visible {
-  outline-offset: 6px;
+  outline-offset: 7px;
 }
 
 
 /* ---------------------------------------------------------------------------
-   9. Reduced Motion
+   8. Reduced Motion
+   Collapses all transitions; the ::after underline gets none rather than
+   the global 0.01ms so it stays hidden (not instantly visible on focus).
    --------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *,
