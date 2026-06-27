@@ -109,12 +109,46 @@
 
 
 /* ---------------------------------------------------------------------------
-   4. Service Cards
-   A faint teal wash floods the card; a teal stripe appears at the top edge
-   using inset box-shadow so it never shifts layout.
+   4. Scroll Reveal
+   Elements with [data-reveal] or children of [data-stagger] start invisible
+   and slide up. The JS observer adds .in-view to trigger the transition.
+   Service cards also need opacity + transform here so the .service-card rule
+   below (same specificity) doesn't override the reveal transition.
+   --------------------------------------------------------------------------- */
+[data-reveal],
+[data-stagger] > * {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity   560ms var(--ease),
+    transform 560ms var(--ease);
+}
+
+[data-reveal].in-view,
+[data-stagger] > *.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-stagger] > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+
+/* ---------------------------------------------------------------------------
+   5. Service Cards
+   Must list all 4 transition properties so it doesn't shadow the reveal
+   transitions (same specificity 0,1,0 as [data-stagger] > *).
    --------------------------------------------------------------------------- */
 .service-card {
   transition:
+    opacity          560ms var(--ease),
+    transform        560ms var(--ease),
     background-color var(--dur-move) var(--ease),
     box-shadow       var(--dur-move) var(--ease);
 }
@@ -126,7 +160,7 @@
 
 
 /* ---------------------------------------------------------------------------
-   5. Inline CTA Link  (service-area "Not sure?" link)
+   6. Inline CTA Link  (service-area "Not sure?" link)
    Color deepens; underline slides in to confirm it's a link, not just text.
    --------------------------------------------------------------------------- */
 .link-cta {
@@ -144,7 +178,7 @@
 
 
 /* ---------------------------------------------------------------------------
-   6. Footer Links
+   7. Footer Links
    Teal-light colour shift paired with a small horizontal nudge — gives the
    list a directional feel, like the links are leaning toward the cursor.
    --------------------------------------------------------------------------- */
@@ -162,7 +196,7 @@
 
 
 /* ---------------------------------------------------------------------------
-   7. Focus Accessibility
+   8. Focus Accessibility
    Teal-light outline works on both light and dark surfaces.
    --------------------------------------------------------------------------- */
 :focus-visible {
@@ -181,7 +215,7 @@
 
 
 /* ---------------------------------------------------------------------------
-   8. Reduced Motion
+   9. Reduced Motion
    Collapses all transitions; the ::after underline gets none rather than
    the global 0.01ms so it stays hidden (not instantly visible on focus).
    --------------------------------------------------------------------------- */
